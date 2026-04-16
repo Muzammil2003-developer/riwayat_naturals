@@ -1,0 +1,265 @@
+@extends('layouts.app')
+
+@section('content')
+<!-- Hero Section -->
+<section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0 leaf-pattern"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#2d5a27]/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#4a7c42]/10 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 relative">
+    <div class="text-center max-w-3xl mx-auto">
+            <div data-aos="fade-up" data-aos-delay="100" class="inline-block px-4 py-1 bg-[#2d5a27]/10 rounded-full text-[#2d5a27] font-medium text-sm mb-6">
+                ✨ 100% Natural & Organic
+            </div>
+            <h1 data-aos="fade-up" data-aos-delay="200" class="text-5xl md:text-7xl font-bold text-[#1e3d1a] mb-6 leading-tight">
+                Nature's Best for <br>
+                <span class="text-[#2d5a27]">Beautiful Hair</span>
+            </h1>
+            <p data-aos="fade-up" data-aos-delay="400" class="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
+                Discover our premium collection of natural hair oils that nourish, strengthen, and transform your hair. Free from harsh chemicals, full of nature's goodness.
+            </p>
+            <div data-aos="fade-up" data-aos-delay="600" class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#products" class="green-gradient px-8 py-4 rounded-full text-white font-semibold hover:opacity-90 transition inline-flex items-center justify-center">
+                    <i class="fas fa-shopping-bag mr-2"></i> Shop Now
+                </a>
+                <a href="#about" class="border-2 border-[#2d5a27] text-[#2d5a27] px-8 py-4 rounded-full font-semibold hover:bg-[#2d5a27] hover:text-white transition">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="py-16 bg-white">
+<div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-leaf text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">100% Natural</h3>
+            <p class="text-sm text-gray-500">No harsh chemicals</p>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-flask text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">Herbal Formula</h3>
+            <p class="text-sm text-gray-500">Ancient recipes</p>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-heart text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">Gentle</h3>
+            <p class="text-sm text-gray-500">Safe for all hair</p>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-shipping-fast text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">Fast Delivery</h3>
+            <p class="text-sm text-gray-500">Free shipping</p>
+        </div>
+    </div>
+</section>
+
+<!-- Products -->
+<section id="products" class="py-20 bg-[#f8faf7]">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <h2 data-aos="fade-up" class="text-4xl md:text-5xl font-bold text-[#1e3d1a] mb-4">Our Products</h2>
+            <p data-aos="fade-up" data-aos-delay="200" class="text-gray-600 text-lg">Premium natural hair oils for your hair care routine</p>
+        </div>
+
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-xl mb-8 text-center max-w-md mx-auto">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if($products->isEmpty())
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-[#f0f5ed] rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-flask text-4xl text-[#2d5a27]"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#1e3d1a] mb-2">Coming Soon!</h3>
+                <p class="text-gray-600">Our products are loading. Check back soon!</p>
+            </div>
+        @else
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+@foreach($products as $index => $product)
+                    <div data-aos="zoom-in-up" data-aos-delay="{{ ($index * 100) }}" class="bg-white rounded-3xl shadow-lg overflow-hidden product-card transition-all duration-300 cursor-pointer" onclick="openOrderModal({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
+                        <div class="h-64 bg-gradient-to-br from-[#f0f5ed] to-white flex items-center justify-center relative">
+                            @if($product->image)
+                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-32 h-32 green-gradient rounded-full flex items-center justify-center">
+                                    <i class="fas fa-oil-can text-white text-5xl"></i>
+                                </div>
+                            @endif
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-medium text-[#2d5a27]">
+                                Natural
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-[#1e3d1a] mb-2">{{ $product->name }}</h3>
+                            <p class="text-gray-500 text-sm mb-4 line-clamp-2">{{ $product->description }}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-2xl font-bold text-[#2d5a27]">₨{{ number_format($product->price, 2) }}</span>
+                                <span class="bg-[#2d5a27] text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-[#1e3d1a] transition">
+                                    <i class="fas fa-shopping-cart mr-1"></i> Order
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+    </div>
+</section>
+
+<!-- About -->
+<section id="about" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
+        <div data-aos="fade-right">
+            <div class="relative">
+                <div class="w-full h-96 bg-gradient-to-br from-[#2d5a27] to-[#4a7c42] rounded-3xl flex items-center justify-center">
+                    <i class="fas fa-leaf text-white text-[150px] opacity-50"></i>
+                </div>
+                <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-6">
+                    <p class="text-4xl font-bold text-[#2d5a27]">100%</p>
+                    <p class="text-gray-500">Natural</p>
+                </div>
+            </div>
+        </div>
+        <div data-aos="fade-left">
+            <h2 class="text-4xl font-bold text-[#1e3d1a] mb-6">Pure Nature, Beautiful Hair</h2>
+            <p class="text-gray-600 text-lg mb-6">
+                At Riwayat Naturals, we believe in the power of nature. Our hair oils are crafted from traditional recipes using pure, natural ingredients that have been used for generations.
+            </p>
+            <ul class="space-y-4">
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-[#2d5a27] mr-3"></i>
+                    Free from sulfates and parabens
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-[#2d5a27] mr-3"></i>
+                    Cruelty-free and vegan
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-[#2d5a27] mr-3"></i>
+                    Suitable for all hair types
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-[#2d5a27] mr-3"></i>
+                    Eco-friendly packaging
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Order Modal -->
+<div id="orderModal" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div class="green-gradient p-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-white">Order Now</h2>
+                <button onclick="closeOrderModal()" class="text-white/80 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <p id="productName" class="text-white/80 mt-1"></p>
+        </div>
+        <form id="orderForm" method="POST" action="{{ route('orders.store') }}" class="p-6">
+            @csrf
+            <input type="hidden" name="product_id" id="productId">
+            
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Your Name</label>
+                    <input type="text" name="customer_name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2d5a27] focus:border-[#2d5a27]" placeholder="Enter your name">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
+                    <input type="tel" name="customer_phone" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2d5a27] focus:border-[#2d5a27]" placeholder="Enter your phone number">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Delivery Address</label>
+                    <textarea name="customer_address" required rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2d5a27] focus:border-[#2d5a27]" placeholder="Enter your delivery address"></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-medium mb-2">Quantity</label>
+                    <div class="flex items-center gap-4">
+                        <button type="button" onclick="decreaseQty()" class="w-12 h-12 bg-[#f0f5ed] text-[#2d5a27] rounded-xl hover:bg-[#2d5a27] hover:text-white transition">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" name="quantity" id="quantity" value="1" min="1" required class="w-20 text-center px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#2d5a27] focus:border-[#2d5a27]">
+                        <button type="button" onclick="increaseQty()" class="w-12 h-12 bg-[#f0f5ed] text-[#2d5a27] rounded-xl hover:bg-[#2d5a27] hover:text-white transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="bg-[#f0f5ed] p-4 rounded-xl">
+                    <p class="text-gray-600">Total Price:</p>
+                    <p id="totalPrice" class="text-3xl font-bold text-[#2d5a27]"></p>
+                </div>
+            </div>
+            <button type="submit" class="w-full mt-6 green-gradient text-white py-4 rounded-xl font-bold hover:opacity-90 transition">
+                <i class="fas fa-check-circle mr-2"></i> Place Order
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let currentPrice = 0;
+
+    function openOrderModal(productId, productName, price) {
+        document.getElementById('productId').value = productId;
+        document.getElementById('productName').textContent = productName;
+        currentPrice = price;
+        updateTotalPrice();
+        document.getElementById('orderModal').classList.remove('hidden');
+        document.getElementById('orderModal').classList.add('flex');
+    }
+
+    function closeOrderModal() {
+        document.getElementById('orderModal').classList.add('hidden');
+        document.getElementById('orderModal').classList.remove('flex');
+        document.getElementById('orderForm').reset();
+        document.getElementById('quantity').value = 1;
+        updateTotalPrice();
+    }
+
+    function increaseQty() {
+        let qty = parseInt(document.getElementById('quantity').value);
+        document.getElementById('quantity').value = qty + 1;
+        updateTotalPrice();
+    }
+
+    function decreaseQty() {
+        let qty = parseInt(document.getElementById('quantity').value);
+        if (qty > 1) {
+            document.getElementById('quantity').value = qty - 1;
+            updateTotalPrice();
+        }
+    }
+
+    function updateTotalPrice() {
+        let qty = parseInt(document.getElementById('quantity').value) || 0;
+        let total = currentPrice * qty;
+        document.getElementById('totalPrice').textContent = '₨' + total.toFixed(2);
+    }
+
+    document.getElementById('quantity').addEventListener('input', updateTotalPrice);
+
+    document.getElementById('orderModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeOrderModal();
+        }
+    });
+</script>
+@endsection
