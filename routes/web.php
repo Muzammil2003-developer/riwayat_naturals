@@ -11,6 +11,18 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\BestsellerController;
 
+function canRunMaintenanceCommand(): bool
+{
+    if (auth()->check() && auth()->user()->is_admin) {
+        return true;
+    }
+
+    $token = request()->query('token');
+    $expectedToken = env('MAINTENANCE_TOKEN');
+
+    return !empty($expectedToken) && hash_equals($expectedToken, (string) $token);
+}
+
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/bestseller', [BestsellerController::class, 'index'])->name('bestseller');
 Route::get('/about', function() { return view('about'); })->name('about');
@@ -25,7 +37,7 @@ Route::get('/link', function () {
 });
 
 Route::get('/migrate', function () {
-    if (!auth()->check() || !auth()->user()->is_admin) {
+    if (!canRunMaintenanceCommand()) {
         return 'Unauthorized';
     }
     try {
@@ -37,7 +49,7 @@ Route::get('/migrate', function () {
 });
 
 Route::get('/seed', function () {
-    if (!auth()->check() || !auth()->user()->is_admin) {
+    if (!canRunMaintenanceCommand()) {
         return 'Unauthorized';
     }
     try {
