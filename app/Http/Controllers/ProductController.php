@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Package;
 use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 
 class ProductController extends Controller
 {
     public function index(): View
     {
         $products = Product::where('is_active', true)->get();
+        $packages = Package::where('is_active', true)->get();
         $currency = \App\Models\Setting::get('currency', 'PKR');
-        $currencySymbol = \App\Models\Setting::get('currency_symbol', '₨');
-        return view('welcome', compact('products', 'currency', 'currencySymbol'));
+        $currencySymbol = \App\Models\Setting::get('currency_symbol', 'Rs.');
+
+        return view('welcome', compact('products', 'packages', 'currency', 'currencySymbol'));
     }
 
     public function adminIndex(): View
@@ -77,5 +80,17 @@ class ProductController extends Controller
     {
         $product->delete();
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully!');
+    }
+
+    public function toggleActive(Request $request, Product $product): \Illuminate\Http\JsonResponse
+    {
+        $product->is_active = $request->boolean('active');
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            'is_active' => $product->is_active,
+            'message' => $product->is_active ? 'Product activated' : 'Product deactivated'
+        ]);
     }
 }

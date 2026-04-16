@@ -220,7 +220,10 @@
             duration: 800,
             once: true,
             offset: 50,
-            disable: 'mobile'
+            // Keep animations enabled on mobile, but respect reduced-motion settings.
+            disable: function () {
+                return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            }
         });
     </script>
     <script>

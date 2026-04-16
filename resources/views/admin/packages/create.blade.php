@@ -3,33 +3,39 @@
 @section('content')
 <div class="max-w-3xl mx-auto">
     <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Add New Product</h1>
-        <a href="{{ route('admin.products.index') }}" class="text-amber-600 hover:text-amber-700">
+        <h1 class="text-3xl font-bold text-gray-800">Add New Package</h1>
+        <a href="{{ route('admin.packages.index') }}" class="text-amber-600 hover:text-amber-700">
             <i class="fas fa-arrow-left mr-1"></i> Back
         </a>
     </div>
 
     <div class="bg-white rounded-xl shadow-lg p-8">
-        <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.packages.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="space-y-6">
                 <div>
-                    <label class="block text-gray-700 font-medium mb-2">Product Name</label>
-                    <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="Enter product name">
+                    <label class="block text-gray-700 font-medium mb-2">Package Name</label>
+                    <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="Enter package name">
                 </div>
 
                 <div>
                     <label class="block text-gray-700 font-medium mb-2">Description</label>
-                    <textarea name="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="Enter product description"></textarea>
+                    <textarea name="description" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="Enter package details"></textarea>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Original Price</label>
+                        <input type="number" name="original_price" step="0.01" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="0.00">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-medium mb-2">Discount Price</label>
+                        <input type="number" name="discount_price" step="0.01" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="0.00">
+                    </div>
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 font-medium mb-2">Price ($)</label>
-                    <input type="number" name="price" step="0.01" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="0.00">
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 font-medium mb-2">Product Image</label>
+                    <label class="block text-gray-700 font-medium mb-2">Package Image</label>
                     <div id="imageDropzone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-amber-400 transition cursor-pointer">
                         <input type="file" name="image" accept="image/*" class="sr-only" id="imageInput" onchange="previewImage(event)">
                         <label for="imageInput" class="cursor-pointer block">
@@ -49,7 +55,7 @@
             </div>
 
             <button type="submit" class="w-full mt-8 green-gradient text-white py-3 rounded-lg font-bold hover:bg-amber-700 transition">
-                <i class="fas fa-save mr-2"></i> Save Product
+                <i class="fas fa-save mr-2"></i> Save Package
             </button>
         </form>
     </div>
@@ -73,9 +79,11 @@
             reader.onload = function(e) {
                 document.getElementById('previewImg').src = e.target.result;
                 document.getElementById('imagePreview').classList.remove('hidden');
-            }
+            };
             reader.readAsDataURL(file);
         }
     }
 </script>
 @endsection
+
+

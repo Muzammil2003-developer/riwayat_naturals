@@ -73,12 +73,6 @@
             <p data-aos="fade-up" data-aos-delay="200" class="text-black/70 text-lg">Premium natural hair oils for your hair care routine</p>
         </div>
 
-        @if(session('success'))
-            <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded-xl mb-8 text-center max-w-md mx-auto">
-                {{ session('success') }}
-            </div>
-        @endif
-
         @if($products->isEmpty())
             <div class="text-center py-20">
                 <div class="w-24 h-24 bg-[#f0f5ed] rounded-full flex items-center justify-center mx-auto mb-6">
@@ -121,7 +115,7 @@
                                 </div>
 
                                 <button type="button"
-                                    onclick="openOrderModal({{ $product->id }}, @js($product->name), {{ $product->price }})"
+                                    onclick="openOrderModal({{ $product->id }}, null, @js($product->name), {{ $product->price }})"
                                     class="w-full bg-black text-white py-3 rounded-md text-base md:text-lg font-bold hover:opacity-90 transition">
                                     <i class="fas fa-cart-plus mr-2"></i>Buy with Cash on Delivery
                                 </button>
@@ -135,6 +129,55 @@
         @endif
     </div>
 </section>
+
+<!-- Discount Packages -->
+@if(isset($packages) && $packages->isNotEmpty())
+<section id="packages" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 data-aos="fade-up" class="text-4xl md:text-5xl font-extrabold text-black mb-4">Special Packages</h2>
+            <p data-aos="fade-up" data-aos-delay="120" class="text-black/65 text-lg">Bundle offers with discounted prices for better value.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach($packages as $index => $package)
+                @php
+                    $savingPercent = $package->original_price > 0
+                        ? round((($package->original_price - $package->discount_price) / $package->original_price) * 100)
+                        : 0;
+                @endphp
+                <div data-aos="fade-up" data-aos-delay="{{ ($index * 100) }}" class="rounded-2xl border border-black/10 shadow-sm overflow-hidden bg-white">
+                    <div class="h-52 bg-gradient-to-b from-[#171717] to-black flex items-center justify-center">
+                        @if($package->image)
+                            <img src="{{ asset('storage/' . $package->image) }}" alt="{{ $package->name }}" class="w-full h-full object-cover">
+                        @else
+                            <i class="fas fa-gift text-[#d9b66e] text-6xl"></i>
+                        @endif
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-center justify-between gap-3 mb-2">
+                            <h3 class="text-xl font-bold text-gray-900">{{ $package->name }}</h3>
+                            @if($savingPercent > 0)
+                                <span class="px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold">Save {{ $savingPercent }}%</span>
+                            @endif
+                        </div>
+                        <p class="text-sm text-gray-600 mb-4">{{ $package->description ?: 'Limited-time package offer for premium hair care.' }}</p>
+                        <div class="flex items-end gap-3">
+                            <span class="text-gray-400 line-through">{{ $siteSettings['currency_symbol'] ?? 'Rs.' }}{{ number_format($package->original_price, 2) }}</span>
+                            <span class="text-2xl font-extrabold text-[#2d5a27]">{{ $siteSettings['currency_symbol'] ?? 'Rs.' }}{{ number_format($package->discount_price, 2) }}</span>
+                        </div>
+                        <button type="button"
+                            onclick="openOrderModal(null, {{ $package->id }}, @js($package->name), {{ $package->discount_price }})"
+                            class="w-full mt-4 bg-black text-white py-3 rounded-md text-sm md:text-base font-bold hover:opacity-90 transition">
+                            <i class="fas fa-cart-plus mr-2"></i>Order This Package
+                        </button>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 
 <!-- About -->
 <section id="about" class="py-20 bg-white">
@@ -192,6 +235,7 @@
         <form id="orderForm" method="POST" action="{{ route('orders.store') }}" class="p-6">
             @csrf
             <input type="hidden" name="product_id" id="productId">
+            <input type="hidden" name="package_id" id="packageId">
             
             <div class="space-y-5">
                 <div>
@@ -230,11 +274,34 @@
     </div>
 </div>
 
+@if(session('success'))
+<div id="orderSuccessPopup" class="fixed inset-0 z-[70] bg-black/45 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+        <div class="green-gradient p-5 flex items-center justify-between">
+            <h3 class="text-white text-xl font-bold">Order Confirmed</h3>
+            <button type="button" id="closeOrderSuccessPopup" class="text-white/80 hover:text-white transition" aria-label="Close confirmation popup">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+        </div>
+        <div class="p-6 text-center">
+            <div class="w-14 h-14 rounded-full bg-[#f0f5ed] text-[#2d5a27] flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl"></i>
+            </div>
+            <p class="text-gray-800 font-semibold">{{ session('success') }}</p>
+            <button type="button" id="okOrderSuccessPopup" class="mt-6 w-full green-gradient text-white py-3 rounded-xl font-semibold hover:opacity-90 transition">
+                OK
+            </button>
+        </div>
+    </div>
+</div>
+@endif
+
 <script>
     let currentPrice = 0;
 
-    function openOrderModal(productId, productName, price) {
-        document.getElementById('productId').value = productId;
+    function openOrderModal(productId, packageId, productName, price) {
+        document.getElementById('productId').value = productId || '';
+        document.getElementById('packageId').value = packageId || '';
         document.getElementById('productName').textContent = productName;
         currentPrice = price;
         updateTotalPrice();
@@ -277,5 +344,22 @@
             closeOrderModal();
         }
     });
+
+    const successPopup = document.getElementById('orderSuccessPopup');
+    if (successPopup) {
+        const closeSuccessPopup = () => successPopup.classList.add('hidden');
+        document.getElementById('closeOrderSuccessPopup').addEventListener('click', closeSuccessPopup);
+        document.getElementById('okOrderSuccessPopup').addEventListener('click', closeSuccessPopup);
+        successPopup.addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeSuccessPopup();
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !successPopup.classList.contains('hidden')) {
+                closeSuccessPopup();
+            }
+        });
+    }
 </script>
 @endsection

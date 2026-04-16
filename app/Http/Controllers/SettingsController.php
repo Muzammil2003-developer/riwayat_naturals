@@ -26,12 +26,12 @@ class SettingsController extends Controller
         return view('admin.settings.index', compact('settings'));
     }
 
-    public function update(Request $request): RedirectResponse
+public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'site_name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:255',
-            'logo' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'announcement_text' => 'nullable|string|max:255',
             'phone' => 'nullable|string',
             'email' => 'nullable|email',
@@ -39,6 +39,15 @@ class SettingsController extends Controller
             'currency' => 'nullable|string|max:10',
             'currency_symbol' => 'nullable|string|max:10',
         ]);
+
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $filename = 'logo.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('storage'), $filename);
+            Setting::set('logo', 'storage/' . $filename);
+        }
+
+        unset($data['logo']);
 
         foreach ($data as $key => $value) {
             Setting::set($key, $value);

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.tailwindcss.min.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatabl   es.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.tailwindcss.min.js"></script>
     <style>
         .green-gradient { background: linear-gradient(135deg, #2d5a27 0%, #4a7c42 100%); }
         
@@ -22,14 +22,32 @@
         }
         .mobile-menu-btn { display: none; }
         
-        .data-table_wrapper { font-size: 14px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow-x: auto; }
-        .data-table_wrapper table { width: 100%; }
-        .data-table_wrapper thead th { background: linear-gradient(135deg, #2d5a27 0%, #4a7c42 100%); color: white; padding: 14px 12px; text-align: left; font-weight: 500; white-space: nowrap; }
-        .data-table_wrapper tbody td { padding: 14px 12px; border-bottom: 1px solid #e5e5e5; white-space: nowrap; }
-        .data-table_wrapper tbody tr:hover { background: #f0f9f0; }
-        .dataTables_wrapper .dataTables_length { margin-bottom: 10px; }
+        .data-table_wrapper { 
+            @apply bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden font-sans;
+            font-size: 14px;
+        }
+        .data-table_wrapper .dataTables_wrapper { padding: 1.5rem; }
+        .data-table_wrapper thead th { 
+            @apply bg-gradient-to-r from-[#2d5a27] to-[#1e3d1a] text-white px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider sticky top-0 z-10 shadow-sm;
+            white-space: nowrap;
+        }
+        .data-table_wrapper tbody td { 
+            @apply px-6 py-4 border-b border-gray-100 align-middle;
+        }
+        .data-table_wrapper tbody tr { @apply transition-colors hover:bg-emerald-50/50; }
+        .data-table_wrapper tbody tr:nth-child(even) { @apply bg-gray-50/50; }
+        .dataTables_wrapper .dataTables_filter input, .dataTables_wrapper .dataTables_length select { 
+            @apply px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button { 
+            @apply px-4 py-2 mx-1 border border-gray-300 rounded-lg bg-white hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all font-medium text-sm;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current { 
+            @apply bg-emerald-600 text-white border-emerald-600 shadow-md;
+        }
+        .dataTables_wrapper .dataTables_length { margin-bottom: 8px; }
         .dataTables_wrapper .dataTables_length select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; }
-        .dataTables_wrapper .dataTables_filter { margin-bottom: 10px; float: right; }
+        .dataTables_wrapper .dataTables_filter { margin-bottom: 8px; float: right; }
         .dataTables_wrapper .dataTables_filter input { padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; }
         .dataTables_wrapper .dataTables_info { padding: 10px 0; color: #666; float: left; }
         .dataTables_wrapper .dataTables_paginate { padding: 10px 0; }
@@ -44,6 +62,14 @@
         .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
             background: #ccc; cursor: not-allowed;
         }
+        @media (max-width: 768px) {
+            .data-table_wrapper thead th,
+            .data-table_wrapper tbody td { padding: 8px 8px; font-size: 12px; }
+            .dataTables_wrapper .dataTables_filter,
+            .dataTables_wrapper .dataTables_length,
+            .dataTables_wrapper .dataTables_info,
+            .dataTables_wrapper .dataTables_paginate { float: none !important; text-align: left; }
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen" style="overflow-x: hidden;">
@@ -55,26 +81,65 @@
                     <i class="fas fa-leaf text-2xl"></i>
                     <span class="text-xl font-bold">Riwayat Admin</span>
                 </a>
+                @php
+                    $lastSeenPendingOrderId = (int) \App\Models\Setting::get('admin_seen_pending_order_id', '0');
+                    $lastSeenContactId = (int) \App\Models\Setting::get('admin_seen_contact_id', '0');
+                    $pendingOrdersCount = \App\Models\Order::where('status', 'pending')->where('id', '>', $lastSeenPendingOrderId)->count();
+                    $unreadContactsCount = \App\Models\Contact::where('is_read', false)->where('id', '>', $lastSeenContactId)->count();
+                    $adminUnreadCount = $pendingOrdersCount + $unreadContactsCount;
+                @endphp
                 <!-- Notification Bell -->
                 <div class="relative mb-6">
                     <button id="notificationBtn" class="w-full flex items-center space-x-3 p-3 rounded-lg bg-white/10 hover:bg-white/20 transition text-left text-white/90 group">
                         <i class="fas fa-bell text-xl group-hover:animate-pulse"></i>
                         <div class="flex-1">
                             <span>Notifications</span>
-                            <span id="notificationBadge" class="ml-2 bg-red-500 text-xs px-2 py-1 rounded-full hidden">0</span>
+                            <span id="notificationBadge" class="ml-2 bg-red-500 text-xs px-2 py-1 rounded-full {{ $adminUnreadCount > 0 ? '' : 'hidden' }}">{{ $adminUnreadCount }}</span>
                         </div>
                         <i class="fas fa-chevron-down text-sm"></i>
                     </button>
-                    <div id="notificationDropdown" class="absolute top-full left-0 w-80 bg-white rounded-xl shadow-2xl border mt-2 opacity-0 invisible scale-95 transition-all duration-200 z-50 max-h-96 overflow-y-auto">
+                    <div id="notificationDropdown" class="hidden absolute top-full left-0 w-80 bg-white rounded-xl shadow-2xl border mt-2 z-50 max-h-96 overflow-y-auto">
                         <div class="p-4 border-b">
                             <h3 class="font-bold text-gray-800 mb-2">Recent Notifications</h3>
                             <button id="markAllRead" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Mark all read</button>
                         </div>
                         <div id="notificationList" class="p-4 max-h-64 overflow-y-auto">
-                            <div class="text-center py-8 text-gray-500">
-                                <i class="fas fa-bell-slash text-2xl mb-2"></i>
-                                <p>No new notifications</p>
-                            </div>
+                            @if($pendingOrdersCount > 0)
+                                <a href="{{ route('admin.orders.index') }}" class="notification-item block p-3 border-b hover:bg-gray-50 cursor-pointer group">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-shopping-cart text-blue-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 truncate">New pending orders</p>
+                                            <p class="text-xs text-gray-500 truncate">{{ $pendingOrdersCount }} waiting for review</p>
+                                        </div>
+                                        <div class="text-xs text-gray-400 group-hover:text-gray-600">&#8226;</div>
+                                    </div>
+                                </a>
+                            @endif
+
+                            @if($unreadContactsCount > 0)
+                                <a href="{{ route('admin.contacts.index') }}" class="notification-item block p-3 border-b hover:bg-gray-50 cursor-pointer group">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-envelope text-orange-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-gray-900 truncate">New contact messages</p>
+                                            <p class="text-xs text-gray-500 truncate">{{ $unreadContactsCount }} unread messages</p>
+                                        </div>
+                                        <div class="text-xs text-gray-400 group-hover:text-gray-600">&#8226;</div>
+                                    </div>
+                                </a>
+                            @endif
+
+                            @if($adminUnreadCount === 0)
+                                <div class="text-center py-8 text-gray-500">
+                                    <i class="fas fa-bell-slash text-2xl mb-2"></i>
+                                    <p>No new notifications</p>
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -84,6 +149,9 @@
                     </a>
                     <a href="{{ route('admin.products.index') }}" class="block py-3 px-4 rounded-lg text-white/80 hover:bg-white/20 transition {{ request()->routeIs('admin.products.*') ? 'bg-white/20' : '' }}">
                         <i class="fas fa-box mr-2"></i> Products
+                    </a>
+                    <a href="{{ route('admin.packages.index') }}" class="block py-3 px-4 rounded-lg text-white/80 hover:bg-white/20 transition {{ request()->routeIs('admin.packages.*') ? 'bg-white/20' : '' }}">
+                        <i class="fas fa-gift mr-2"></i> Packages
                     </a>
                     <a href="{{ route('admin.orders.index') }}" class="block py-3 px-4 rounded-lg text-white/80 hover:bg-white/20 transition {{ request()->routeIs('admin.orders.*') ? 'bg-white/20' : '' }}">
                         <i class="fas fa-shopping-cart mr-2"></i> Orders
@@ -122,41 +190,122 @@
 
 <script>
 $(document).ready(function() {
-    $('.data-table').DataTable({
-        pageLength: 10,
-        order: [[0, 'desc']],
-        language: {
-            search: "Search:",
-            lengthMenu: "Show _MENU_ entries",
-            info: "Showing _START_ to _END_ of _TOTAL_",
-            paginate: { first: "First", last: "Last", next: "Next", previous: "Previous" }
+    $('.data-table').each(function() {
+        if ($(this).find('tbody tr').length > 0) {
+            $(this).DataTable({
+                responsive: true,
+                pageLength: 25,
+                order: [[0, 'desc']],
+                autoWidth: false,
+                dom: '<"top"lf>rt<"bottom"ip><"clear">',
+                language: {
+                    search: '<i class="fas fa-search mr-1"></i> Search:',
+                    lengthMenu: '<i class="fas fa-list mr-1"></i> _MENU_ per page',
+                    info: '<i class="fas fa-info-circle mr-1"></i> _START_ to _END_ of _TOTAL_',
+                    paginate: { 
+                        first: '<i class="fas fa-angle-double-left"></i>', 
+                        last: '<i class="fas fa-angle-double-right"></i>', 
+                        next: '<i class="fas fa-angle-right"></i>', 
+                        previous: '<i class="fas fa-angle-left"></i>' 
+                    },
+                    emptyTable: '<div class="text-center py-12"><i class="fas fa-inbox text-4xl text-gray-300 mb-4 block"></i><h3 class="text-xl font-semibold text-gray-500 mb-2">No data available</h3><p class="text-gray-400">Get started by adding your first record.</p></div>',
+                    processing: '<div class="flex items-center justify-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>'
+                },
+                drawCallback: function() {
+                    $('tbody tr').hover(function() { $(this).addClass('hover:bg-gray-50'); }, function() { $(this).removeClass('hover:bg-gray-50'); });
+                }
+            });
         }
     });
-    
+
+    // Mark all read - defined before use
+    const markSeenOnServer = async () => {
+        try {
+            await fetch('{{ route('admin.notifications.seen') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({})
+            });
+        } catch (e) {}
+    };
+
     // Notification functionality
     const notificationBtn = document.getElementById('notificationBtn');
     const dropdown = document.getElementById('notificationDropdown');
     if (notificationBtn && dropdown) {
+        const openDropdown = () => {
+            dropdown.classList.remove('hidden');
+            const badge = document.getElementById('notificationBadge');
+            if (badge) {
+                badge.classList.add('hidden');
+                badge.textContent = '0';
+            }
+            markSeenOnServer();
+        };
+
+        const closeDropdown = () => {
+            dropdown.classList.add('hidden');
+        };
+
+        const isOpen = () => !dropdown.classList.contains('hidden');
+
         notificationBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            dropdown.classList.toggle('opacity-100');
-            dropdown.classList.toggle('invisible');
-            dropdown.classList.toggle('scale-100');
+            if (isOpen()) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
         });
         
         // Close dropdown when clicking outside
         document.addEventListener('click', function(e) {
             if (!notificationBtn.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                closeDropdown();
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDropdown();
             }
         });
         
         // Mark all read
         const markAllRead = document.getElementById('markAllRead');
+        const markSeenOnServer = async () => {
+            try {
+                await fetch('{{ route('admin.notifications.seen') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({})
+                });
+            } catch (error) {
+                // Silent fail; UI still works without blocking.
+            }
+        };
+
         if (markAllRead) {
-            markAllRead.addEventListener('click', function() {
-                document.getElementById('notificationBadge').classList.add('hidden');
-                document.getElementById('notificationList').innerHTML = '<div class="text-center py-8 text-green-600"><i class="fas fa-check-circle text-2xl mb-2"></i><p>All notifications marked as read</p></div>';
+            markAllRead.addEventListener('click', function(e) {
+                e.preventDefault();
+                markSeenOnServer();
+                const badge = document.getElementById('notificationBadge');
+                const list = document.getElementById('notificationList');
+                if (badge) {
+                    badge.classList.add('hidden');
+                    badge.textContent = '0';
+                }
+                if (list) {
+                    list.innerHTML = '<div class="text-center py-8 text-green-600"><i class="fas fa-check-circle text-2xl mb-2"></i><p>All notifications marked as read</p></div>';
+                }
             });
         }
 }

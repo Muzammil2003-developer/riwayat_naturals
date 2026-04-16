@@ -32,13 +32,13 @@
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <label class="block text-gray-700 font-medium mb-2">Logo URL</label>
-                        <input type="text" name="logo" value="{{ $settings['logo'] }}" placeholder="Enter logo image URL" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+<div class="mt-4">
+                        <label class="block text-gray-700 font-medium mb-2">Logo Image</label>
+                        <input type="file" name="logo" accept="image/*" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
                         @if($settings['logo'])
-                            <img src="{{ $settings['logo'] }}" alt="Logo" class="mt-2 h-16 w-auto">
+                            <img src="{{ asset($settings['logo']) }}" alt="Logo" class="mt-2 h-16 w-auto">
                         @endif
-                        <p class="text-xs text-gray-500 mt-1">Paste a logo image URL or upload to storage and paste the path</p>
+                        <p class="text-xs text-gray-500 mt-1">Upload a logo image (jpg, png, gif, svg, webp)</p>
                     </div>
                     <div class="mt-4">
                         <label class="block text-gray-700 font-medium mb-2">Top Announcement Text</label>

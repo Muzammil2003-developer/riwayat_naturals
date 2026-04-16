@@ -59,14 +59,13 @@
                     </tr>
                 @endforeach
                 @if($contacts->isEmpty())
-                    <tr>
-                        <td colspan="7" class="px-6 py-8 text-center text-gray-500">
-                            No messages yet.
-                        </td>
-                    </tr>
+                <tr style="display:none;"><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
                 @endif
             </tbody>
         </table>
+        @if($contacts->isEmpty())
+        <div class="text-center py-12 text-gray-500">No messages yet.</div>
+        @endif
     </div>
 </div>
 @endsection

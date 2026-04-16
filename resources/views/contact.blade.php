@@ -91,11 +91,14 @@
 
         <!-- Map -->
         <div class="mt-16">
-            <div class="w-full h-96 bg-[#f0f5ed] rounded-3xl flex items-center justify-center">
-                <div class="text-center">
-                    <i class="fas fa-map text-6xl text-[#2d5a27] mb-4"></i>
-                    <p class="text-gray-600">Map placeholder</p>
-                </div>
+            <div class="w-full h-96 rounded-3xl overflow-hidden shadow-lg border border-black/5">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3154.0426564966474!2d72.7990696172888!3d33.72897945173245!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfa154c537f09f%3A0xbe090715029a1d2f!2sKohsar%20Colony%2C%20Pakistan!5e1!3m2!1sen!2s!4v1776314475526!5m2!1sen!2s"
+                    class="w-full h-full border-0"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
             </div>
         </div>
     </div>

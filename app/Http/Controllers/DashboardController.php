@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Contact;
+use App\Models\Setting;
 use App\Models\Visit;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -34,10 +37,25 @@ class DashboardController extends Controller
                 ->where('created_at', '>=', now()->subDays(7))
                 ->groupBy('date')
                 ->orderBy('date')
-                ->pluck('count', 'date')
+                ->pluck('count')
                 ->toArray(),
+            'dailyVisitorLabels' => collect(range(6, 0))->map(fn($i) => now()->subDays($i)->format('M d'))->toArray(),
         ];
         return view('admin.dashboard', compact('stats'));
     }
-}
 
+    public function markNotificationsSeen(Request $request): JsonResponse
+    {
+        $latestPendingOrderId = (int) (Order::where('status', 'pending')->max('id') ?? 0);
+        $latestUnreadContactId = (int) (Contact::where('is_read', false)->max('id') ?? 0);
+
+        Setting::set('admin_seen_pending_order_id', (string) $latestPendingOrderId);
+        Setting::set('admin_seen_contact_id', (string) $latestUnreadContactId);
+
+        return response()->json([
+            'success' => true,
+            'seen_pending_order_id' => $latestPendingOrderId,
+            'seen_contact_id' => $latestUnreadContactId,
+        ]);
+    }
+}

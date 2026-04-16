@@ -33,22 +33,31 @@
     </div>
 
     <!-- Chart -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+    @php
+        $maxIncome = $monthlyIncome->max() ?: 1;
+        $maxExpense = $monthlyExpenses->max() ?: 1;
+        $maxValue = max($maxIncome, $maxExpense, 1);
+    @endphp
+    <div class="bg-white rounded-xl shadow-lg p-4 mb-8">
         <h3 class="font-bold text-gray-800 mb-4">Income vs Expenses (This Year)</h3>
-        <div class="h-64 flex items-end justify-around gap-2">
+        <div class="h-48 flex items-end justify-around gap-1 overflow-x-auto">
             @for($i = 1; $i <= 12; $i++)
-                <div class="flex flex-col items-center flex-1">
-                    <div class="w-full flex flex-col gap-1">
-                        <div class="bg-green-500 rounded-t" style="height: {{ $monthlyIncome[$i] ?? 0 }}px; min-height: 2px;"></div>
-                        <div class="bg-red-500 rounded-t" style="height: {{ $monthlyExpenses[$i] ?? 0 }}px; min-height: 2px;"></div>
+                @php
+                    $incomeHeight = $maxValue > 0 ? (($monthlyIncome[$i] ?? 0) / $maxValue) * 100 : 0;
+                    $expenseHeight = $maxValue > 0 ? (($monthlyExpenses[$i] ?? 0) / $maxValue) * 100 : 0;
+                @endphp
+                <div class="flex flex-col items-center flex-1 min-w-[30px]">
+                    <div class="w-full flex flex-col gap-0.5 h-36 justify-end">
+                        <div class="bg-green-500 rounded-t w-full" style="height: {{ $incomeHeight }}%; min-height: 2px;"></div>
+                        <div class="bg-red-500 rounded-t w-full" style="height: {{ $expenseHeight }}%; min-height: 2px;"></div>
                     </div>
-                    <span class="text-xs text-gray-500 mt-2">{{ date('M', mktime(0, 0, 0, $i, 1)) }}</span>
+                    <span class="text-xs text-gray-500 mt-1 whitespace-nowrap">{{ date('M', mktime(0, 0, 0, $i, 1)) }}</span>
                 </div>
             @endfor
         </div>
-        <div class="flex justify-center gap-6 mt-4">
-            <span class="flex items-center"><span class="w-3 h-3 bg-green-500 rounded mr-2"></span> Income</span>
-            <span class="flex items-center"><span class="w-3 h-3 bg-red-500 rounded mr-2"></span> Expenses</span>
+        <div class="flex justify-center gap-6 mt-2 text-sm">
+            <span class="flex items-center"><span class="w-3 h-3 bg-green-500 rounded mr-1"></span> Income</span>
+            <span class="flex items-center"><span class="w-3 h-3 bg-red-500 rounded mr-1"></span> Expenses</span>
         </div>
     </div>
 
@@ -115,8 +124,14 @@
                         </td>
                     </tr>
                 @endforeach
+                @if($expenses->isEmpty())
+                <tr style="display:none;"><td></td><td></td><td></td><td></td><td></td></tr>
+                @endif
             </tbody>
         </table>
+        @if($expenses->isEmpty())
+        <div class="text-center py-12 text-gray-500">No expenses found yet.</div>
+        @endif
     </div>
 </div>
 @endsection
