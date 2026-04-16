@@ -41,6 +41,43 @@ Route::get('/migrate', function () {
         return 'Unauthorized';
     }
     try {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('migrations')) {
+            \Illuminate\Support\Facades\Artisan::call('migrate:install');
+        }
+
+        $baselineMigrations = [
+            '0001_01_01_000000_create_users_table' => 'users',
+            '0001_01_01_000001_create_cache_table' => 'cache',
+            '0001_01_01_000002_create_jobs_table' => 'jobs',
+            '2024_01_01_000000_create_products_table' => 'products',
+            '2024_01_01_000001_create_orders_table' => 'orders',
+            '2024_01_01_000002_create_settings_table' => 'settings',
+            '2024_01_01_000003_create_contacts_table' => 'contacts',
+            '2024_01_01_000003_create_expenses_table' => 'expenses',
+            '2024_01_01_000004_create_visits_table' => 'visits',
+            '2026_04_16_000005_create_packages_table' => 'packages',
+        ];
+
+        $batch = (int) \Illuminate\Support\Facades\DB::table('migrations')->max('batch');
+        $batch = $batch > 0 ? $batch : 1;
+
+        foreach ($baselineMigrations as $migration => $table) {
+            $alreadyLogged = \Illuminate\Support\Facades\DB::table('migrations')
+                ->where('migration', $migration)
+                ->exists();
+
+            if ($alreadyLogged) {
+                continue;
+            }
+
+            if (\Illuminate\Support\Facades\Schema::hasTable($table)) {
+                \Illuminate\Support\Facades\DB::table('migrations')->insert([
+                    'migration' => $migration,
+                    'batch' => $batch,
+                ]);
+            }
+        }
+
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         return 'Migration completed: ' . \Illuminate\Support\Facades\Artisan::output();
     } catch (\Exception $e) {
