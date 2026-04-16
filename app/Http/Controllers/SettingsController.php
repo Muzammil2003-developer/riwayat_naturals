@@ -15,12 +15,14 @@ class SettingsController extends Controller
             'site_name' => Setting::get('site_name', 'Riwayat Naturals'),
             'tagline' => Setting::get('tagline', '100% Natural Hair Care'),
             'logo' => Setting::get('logo', ''),
+            'announcement_text' => Setting::get('announcement_text', 'Rivaaj Mahal Official WhatsApp Numbers : 0327 2222189'),
             'phone' => Setting::get('phone', '+1 234 567 890'),
             'email' => Setting::get('email', 'info@riwayathair.com'),
             'address' => Setting::get('address', '123 Nature Street, Garden City, GC 12345'),
             'currency' => Setting::get('currency', 'PKR'),
-            'currency_symbol' => Setting::get('currency_symbol', '₨'),
+            'currency_symbol' => Setting::get('currency_symbol', 'Rs.'),
         ];
+
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -30,11 +32,12 @@ class SettingsController extends Controller
             'site_name' => 'required|string|max:255',
             'tagline' => 'nullable|string|max:255',
             'logo' => 'nullable|string',
+            'announcement_text' => 'nullable|string|max:255',
             'phone' => 'nullable|string',
             'email' => 'nullable|email',
             'address' => 'nullable|string',
             'currency' => 'nullable|string|max:10',
-            'currency_symbol' => 'nullable|string|max:5',
+            'currency_symbol' => 'nullable|string|max:10',
         ]);
 
         foreach ($data as $key => $value) {

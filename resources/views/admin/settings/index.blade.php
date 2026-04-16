@@ -40,6 +40,10 @@
                         @endif
                         <p class="text-xs text-gray-500 mt-1">Paste a logo image URL or upload to storage and paste the path</p>
                     </div>
+                    <div class="mt-4">
+                        <label class="block text-gray-700 font-medium mb-2">Top Announcement Text</label>
+                        <input type="text" name="announcement_text" value="{{ $settings['announcement_text'] ?? '' }}" placeholder="Rivaaj Mahal Official WhatsApp Numbers : 0327 2222189" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
+                    </div>
                 </div>
 
                 <div class="border-b pb-6">
@@ -72,7 +76,7 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Currency Symbol</label>
-                            <input type="text" name="currency_symbol" value="{{ $settings['currency_symbol'] }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="₨">
+                            <input type="text" name="currency_symbol" value="{{ $settings['currency_symbol'] }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="Rs.">
                         </div>
                     </div>
                 </div>

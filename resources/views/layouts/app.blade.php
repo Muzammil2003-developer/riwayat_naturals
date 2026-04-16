@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
     <style>
@@ -23,7 +23,7 @@
         html { overflow-x: hidden; }
         
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Manrope', 'Poppins', sans-serif;
         }
 
         h1,
@@ -81,58 +81,74 @@
 </head>
 
 <body class="bg-[#f8faf7] min-h-screen" style="overflow-x: hidden;">
-    <nav data-aos="fade-down" class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <a href="{{ route('home') }}" class="flex items-center space-x-3">
-                    <div class="w-12 h-12 green-gradient rounded-full flex items-center justify-center">
-                        <i class="fas fa-leaf text-white text-xl"></i>
+    <nav data-aos="fade-down" class="bg-[#f5f5f5] border-b border-black/10 sticky top-0 z-50">
+        <div class="border-b border-black/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+                <div class="grid grid-cols-3 items-center text-[11px] sm:text-xs font-bold tracking-wide">
+                    <span class="justify-self-start text-black/60"><i class="fas fa-chevron-left"></i></span>
+                    <p class="justify-self-center text-black text-center">{{ $siteSettings['announcement_text'] ?? 'Rivaaj Mahal Official WhatsApp Numbers : 0327 2222189' }}</p>
+                    <span class="justify-self-end text-black/60"><i class="fas fa-chevron-right"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="grid grid-cols-3 items-center">
+                <button class="hidden md:inline-flex w-10 h-10 rounded-full border border-black/15 items-center justify-center text-lg text-black hover:bg-black hover:text-white transition">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button onclick="toggleMobileMenu()" class="md:hidden justify-self-start p-2 text-2xl text-black">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="{{ route('home') }}" class="justify-self-center text-center">
+                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-1.5 rounded-full bg-white shadow-sm border border-[#d9c17f] flex items-center justify-center">
+                        @if(!empty($siteSettings['logo']))
+                            <img src="{{ $siteSettings['logo'] }}" alt="{{ $siteSettings['site_name'] ?? 'Logo' }}" class="w-full h-full rounded-full object-cover">
+                        @else
+                            <span class="text-[#caa44c] text-2xl sm:text-[28px] font-extrabold tracking-tight">RM</span>
+                        @endif
                     </div>
-                    <div>
-                        <span class="text-xl font-bold text-[#2d5a27]">Riwayat Naturals</span>
-                        <p class="text-xs text-gray-400 -mt-1">100% Natural Hair Care</p>
-                    </div>
+                    <p class="text-[10px] uppercase tracking-[0.16em] text-black/60">{{ $siteSettings['site_name'] ?? 'Riwayat Naturals' }}</p>
                 </a>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('home') }}"
-                        class="text-gray-600 hover:text-[#2d5a27] font-medium transition">Home</a>
-                    <a href="{{ route('bestseller') }}"
-                        class="text-gray-600 hover:text-[#2d5a27] font-medium transition">Best Sellers</a>
-                    <a href="{{ route('about') }}"
-                        class="text-gray-600 hover:text-[#2d5a27] font-medium transition">About</a>
-                    <a href="{{ route('contact') }}"
-                        class="text-gray-600 hover:text-[#2d5a27] font-medium transition">Contact</a>
+
+                <div class="justify-self-end flex items-center gap-2">
                     @auth
                         <a href="{{ route('admin.dashboard') }}"
-                            class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white hover:bg-green-700 transition"
+                            class="w-10 h-10 rounded-full border border-black/15 flex items-center justify-center text-black hover:bg-black hover:text-white transition"
                             title="Admin Dashboard">
-                            <i class="fas fa-tachometer-alt"></i>
+                            <i class="fas fa-user-cog"></i>
                         </a>
                     @else
                         <a href="{{ route('admin.login') }}"
-                            class="w-10 h-10 bg-[#2d5a27] rounded-full flex items-center justify-center text-white hover:bg-[#1e3d1a] transition">
-                            <i class="fas fa-user"></i>
+                            class="w-10 h-10 rounded-full border border-black/15 flex items-center justify-center text-black hover:bg-black hover:text-white transition">
+                            <i class="far fa-user"></i>
                         </a>
                     @endauth
+                    <a href="{{ route('bestseller') }}" class="w-10 h-10 rounded-full border border-black/15 flex items-center justify-center text-black hover:bg-black hover:text-white transition">
+                        <i class="fas fa-shopping-bag"></i>
+                    </a>
                 </div>
-                <!-- Mobile Menu Button -->
-                <button onclick="toggleMobileMenu()" class="md:hidden p-2">
-                    <i class="fas fa-bars text-xl text-[#2d5a27]"></i>
-                </button>
             </div>
-            <!-- Mobile Menu -->
-            <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
-                <div class="px-4 py-4 space-y-3">
-                    <a href="{{ route('home') }}" class="block py-2 text-gray-600 hover:text-[#2d5a27]">Home</a>
-                    <a href="{{ route('bestseller') }}" class="block py-2 text-gray-600 hover:text-[#2d5a27]">Best Sellers</a>
-                    <a href="{{ route('about') }}" class="block py-2 text-gray-600 hover:text-[#2d5a27]">About</a>
-                    <a href="{{ route('contact') }}" class="block py-2 text-gray-600 hover:text-[#2d5a27]">Contact</a>
-                    @auth
-                        <a href="{{ route('admin.dashboard') }}" class="block py-2 text-[#2d5a27] font-medium">Dashboard</a>
-                    @else
-                        <a href="{{ route('admin.login') }}" class="block py-2 text-[#2d5a27]">Login</a>
-                    @endauth
-                </div>
+
+            <div class="hidden md:flex items-center justify-center gap-8 mt-3 text-[17px]">
+                <a href="{{ route('home') }}" class="text-black/80 hover:text-black font-medium transition">Home</a>
+                <a href="{{ route('bestseller') }}" class="text-black/80 hover:text-black font-medium transition">Catalog</a>
+                <a href="{{ route('contact') }}" class="text-black/80 hover:text-black font-medium transition">Contact</a>
+            </div>
+        </div>
+
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-black/10">
+            <div class="px-4 py-4 space-y-3">
+                <a href="{{ route('home') }}" class="block py-2 text-black/80 hover:text-black">Home</a>
+                <a href="{{ route('bestseller') }}" class="block py-2 text-black/80 hover:text-black">Catalog</a>
+                <a href="{{ route('about') }}" class="block py-2 text-black/80 hover:text-black">About</a>
+                <a href="{{ route('contact') }}" class="block py-2 text-black/80 hover:text-black">Contact</a>
+                @auth
+                    <a href="{{ route('admin.dashboard') }}" class="block py-2 text-black font-medium">Dashboard</a>
+                @else
+                    <a href="{{ route('admin.login') }}" class="block py-2 text-black/80">Login</a>
+                @endauth
             </div>
         </div>
     </nav>

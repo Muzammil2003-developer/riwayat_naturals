@@ -10,7 +10,7 @@
     <div class="max-w-7xl mx-auto px-4 relative">
     <div class="text-center max-w-3xl mx-auto">
             <div data-aos="fade-up" data-aos-delay="100" class="inline-block px-4 py-1 bg-[#2d5a27]/10 rounded-full text-[#2d5a27] font-medium text-sm mb-6">
-                ✨ 100% Natural & Organic
+                &#10024; 100% Natural & Organic
             </div>
             <h1 data-aos="fade-up" data-aos-delay="200" class="text-5xl md:text-7xl font-bold text-[#1e3d1a] mb-6 leading-tight">
                 Nature's Best for <br>
@@ -66,11 +66,11 @@
 </section>
 
 <!-- Products -->
-<section id="products" class="py-20 bg-[#f8faf7]">
+<section id="products" class="py-20 bg-[#f2f2f2]">
     <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
-            <h2 data-aos="fade-up" class="text-4xl md:text-5xl font-bold text-[#1e3d1a] mb-4">Our Products</h2>
-            <p data-aos="fade-up" data-aos-delay="200" class="text-gray-600 text-lg">Premium natural hair oils for your hair care routine</p>
+            <h2 data-aos="fade-up" class="text-4xl md:text-5xl font-extrabold text-black mb-4">Our Products</h2>
+            <p data-aos="fade-up" data-aos-delay="200" class="text-black/70 text-lg">Premium natural hair oils for your hair care routine</p>
         </div>
 
         @if(session('success'))
@@ -88,29 +88,45 @@
                 <p class="text-gray-600">Our products are loading. Check back soon!</p>
             </div>
         @else
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-@foreach($products as $index => $product)
-                    <div data-aos="zoom-in-up" data-aos-delay="{{ ($index * 100) }}" class="bg-white rounded-3xl shadow-lg overflow-hidden product-card transition-all duration-300 cursor-pointer" onclick="openOrderModal({{ $product->id }}, '{{ $product->name }}', {{ $product->price }})">
-                        <div class="h-64 bg-gradient-to-br from-[#f0f5ed] to-white flex items-center justify-center relative">
-                            @if($product->image)
-                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-32 h-32 green-gradient rounded-full flex items-center justify-center">
-                                    <i class="fas fa-oil-can text-white text-5xl"></i>
-                                </div>
-                            @endif
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-medium text-[#2d5a27]">
-                                Natural
+            <div class="space-y-8">
+                @foreach($products as $index => $product)
+                    <div data-aos="fade-up" data-aos-delay="{{ ($index * 100) }}" class="bg-white rounded-[24px] border border-black/10 shadow-[0_12px_28px_rgba(0,0,0,0.08)] overflow-hidden">
+                        <div class="grid lg:grid-cols-[1fr,1.15fr]">
+                            <div class="relative min-h-[240px] lg:min-h-[340px] bg-gradient-to-b from-[#171717] to-black flex items-center justify-center">
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <div class="text-center text-[#d9b66e]">
+                                        <div class="w-28 h-28 mx-auto mb-4 rounded-full border border-[#d9b66e]/40 flex items-center justify-center">
+                                            <i class="fas fa-oil-can text-5xl"></i>
+                                        </div>
+                                        <p class="text-sm tracking-[0.22em] uppercase">Riwayat Naturals</p>
+                                    </div>
+                                @endif
                             </div>
-                        </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-[#1e3d1a] mb-2">{{ $product->name }}</h3>
-                            <p class="text-gray-500 text-sm mb-4 line-clamp-2">{{ $product->description }}</p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-2xl font-bold text-[#2d5a27]">₨{{ number_format($product->price, 2) }}</span>
-                                <span class="bg-[#2d5a27] text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-[#1e3d1a] transition">
-                                    <i class="fas fa-shopping-cart mr-1"></i> Order
-                                </span>
+
+                            <div class="p-5 md:p-7">
+                                <h3 class="text-2xl md:text-3xl font-extrabold text-black leading-tight">{{ $product->name }}</h3>
+                                <p class="text-black/65 mt-3 text-sm md:text-base">{{ $product->description ?: 'Organic hair oil crafted for healthier, stronger, and shinier hair.' }}</p>
+
+                                <div class="flex items-center gap-3 mt-5 mb-4">
+                                    <span class="text-2xl md:text-3xl font-semibold text-black">{{ $siteSettings['currency_symbol'] ?? 'Rs.' }}{{ number_format($product->price, 2) }}</span>
+                                    <span class="bg-black text-white px-3 py-1 rounded text-xs md:text-sm font-semibold">Sale</span>
+                                </div>
+
+                                <div class="space-y-2 text-sm md:text-base text-black/75 mb-5">
+                                    <p><i class="fas fa-truck text-[#2d5a27] mr-2"></i>Order will be delivered within 2 to 5 days</p>
+                                    <p><i class="fas fa-leaf text-[#2d5a27] mr-2"></i>100% Organic Products</p>
+                                    <p><i class="fas fa-star text-[#2d5a27] mr-2"></i>100+ happy customer reviews</p>
+                                </div>
+
+                                <button type="button"
+                                    onclick="openOrderModal({{ $product->id }}, @js($product->name), {{ $product->price }})"
+                                    class="w-full bg-black text-white py-3 rounded-md text-base md:text-lg font-bold hover:opacity-90 transition">
+                                    <i class="fas fa-cart-plus mr-2"></i>Buy with Cash on Delivery
+                                </button>
+
+                                <p class="mt-3 text-sm md:text-base text-black/70"><i class="fas fa-seedling text-[#2d5a27] mr-2"></i>Organic Hair Oil</p>
                             </div>
                         </div>
                     </div>
@@ -251,7 +267,7 @@
     function updateTotalPrice() {
         let qty = parseInt(document.getElementById('quantity').value) || 0;
         let total = currentPrice * qty;
-        document.getElementById('totalPrice').textContent = '₨' + total.toFixed(2);
+        document.getElementById('totalPrice').textContent = '{{ $siteSettings['currency_symbol'] ?? 'Rs.' }}' + total.toFixed(2);
     }
 
     document.getElementById('quantity').addEventListener('input', updateTotalPrice);
