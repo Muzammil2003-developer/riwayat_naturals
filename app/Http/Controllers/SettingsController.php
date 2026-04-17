@@ -21,6 +21,12 @@ class SettingsController extends Controller
             'address' => Setting::get('address', '123 Nature Street, Garden City, GC 12345'),
             'currency' => Setting::get('currency', 'PKR'),
             'currency_symbol' => Setting::get('currency_symbol', 'Rs.'),
+            'whatsapp_number' => Setting::get('whatsapp_number', ''),
+            'whatsapp_link' => Setting::get('whatsapp_link', ''),
+            'tiktok_url' => Setting::get('tiktok_url', ''),
+            'facebook_url' => Setting::get('facebook_url', ''),
+            'youtube_url' => Setting::get('youtube_url', ''),
+            'instagram_url' => Setting::get('instagram_url', ''),
         ];
 
         return view('admin.settings.index', compact('settings'));
@@ -38,6 +44,12 @@ public function update(Request $request): RedirectResponse
             'address' => 'nullable|string',
             'currency' => 'nullable|string|max:10',
             'currency_symbol' => 'nullable|string|max:10',
+            'whatsapp_number' => 'nullable|string|max:30',
+            'whatsapp_link' => 'nullable|url|max:255',
+            'tiktok_url' => 'nullable|url|max:255',
+            'facebook_url' => 'nullable|url|max:255',
+            'youtube_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
         ]);
 
         if ($request->hasFile('logo')) {

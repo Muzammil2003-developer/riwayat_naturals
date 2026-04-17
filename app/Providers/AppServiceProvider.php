@@ -30,6 +30,12 @@ class AppServiceProvider extends ServiceProvider
                 'email' => Setting::get('email', 'info@riwayathair.com'),
                 'announcement_text' => Setting::get('announcement_text', 'Rivaaj Mahal Official WhatsApp Numbers : 0327 2222189'),
                 'currency_symbol' => Setting::get('currency_symbol', 'Rs.'),
+                'whatsapp_number' => Setting::get('whatsapp_number', ''),
+                'whatsapp_link' => Setting::get('whatsapp_link', ''),
+                'tiktok_url' => Setting::get('tiktok_url', ''),
+                'facebook_url' => Setting::get('facebook_url', ''),
+                'youtube_url' => Setting::get('youtube_url', ''),
+                'instagram_url' => Setting::get('instagram_url', ''),
             ]);
         });
     }

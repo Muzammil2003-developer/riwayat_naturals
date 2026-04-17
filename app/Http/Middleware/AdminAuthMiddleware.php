@@ -14,6 +14,7 @@ class AdminAuthMiddleware
         if (!Auth::check()) {
             return redirect()->route('admin.login');
         }
+
         return $next($request);
     }
 }

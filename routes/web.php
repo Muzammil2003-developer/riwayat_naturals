@@ -13,7 +13,7 @@ use App\Http\Controllers\BestsellerController;
 
 function canRunMaintenanceCommand(): bool
 {
-    if (auth()->check() && auth()->user()->is_admin) {
+    if (auth()->check()) {
         return true;
     }
 
@@ -29,6 +29,10 @@ Route::get('/about', function() { return view('about'); })->name('about');
 Route::get('/contact', function() { return view('contact'); })->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.send');
 Route::get('/link', function () {
+    if (!canRunMaintenanceCommand()) {
+        return 'Unauthorized';
+    }
+
     if (!file_exists(public_path('storage'))) {
         app('files')->link(storage_path('app/public'), public_path('storage'));
         return 'Link created!';
@@ -106,7 +110,9 @@ Route::get('/admin', function () {
 
 Route::get('/admin/login', [LoginController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [LoginController::class, 'login'])->name('admin.login.post');
-Route::post('/admin/logout', [LoginController::class, 'logout'])->name('admin.logout');
+Route::post('/admin/logout', [LoginController::class, 'logout'])
+    ->middleware(\App\Http\Middleware\AdminAuthMiddleware::class)
+    ->name('admin.logout');
 
 Route::middleware(\App\Http\Middleware\AdminAuthMiddleware::class)->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');

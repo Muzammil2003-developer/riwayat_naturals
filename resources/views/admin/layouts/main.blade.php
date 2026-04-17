@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Panel - Riwayat Naturals</title>
     <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,53 +23,143 @@
         }
         .mobile-menu-btn { display: none; }
         
-        .data-table_wrapper { 
-            @apply bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden font-sans;
+        .dataTables_wrapper {
+            padding: 1.25rem;
             font-size: 14px;
         }
-        .data-table_wrapper .dataTables_wrapper { padding: 1.5rem; }
-        .data-table_wrapper thead th { 
-            @apply bg-gradient-to-r from-[#2d5a27] to-[#1e3d1a] text-white px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider sticky top-0 z-10 shadow-sm;
+        table.dataTable {
+            border-collapse: separate !important;
+            border-spacing: 0;
+            width: 100% !important;
+        }
+        table.dataTable thead th {
+            background: linear-gradient(135deg, #2d5a27 0%, #1e3d1a 100%);
+            color: #fff !important;
+            font-size: 12px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border-bottom: none !important;
+            padding: 14px 16px !important;
             white-space: nowrap;
         }
-        .data-table_wrapper tbody td { 
-            @apply px-6 py-4 border-b border-gray-100 align-middle;
+        table.dataTable tbody td {
+            padding: 14px 16px !important;
+            border-bottom: 1px solid #eef2f7 !important;
+            vertical-align: middle;
         }
-        .data-table_wrapper tbody tr { @apply transition-colors hover:bg-emerald-50/50; }
-        .data-table_wrapper tbody tr:nth-child(even) { @apply bg-gray-50/50; }
-        .dataTables_wrapper .dataTables_filter input, .dataTables_wrapper .dataTables_length select { 
-            @apply px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-sm;
+        table.dataTable tbody tr {
+            transition: background-color 220ms ease;
         }
-        .dataTables_wrapper .dataTables_paginate .paginate_button { 
-            @apply px-4 py-2 mx-1 border border-gray-300 rounded-lg bg-white hover:bg-emerald-500 hover:text-white hover:border-emerald-500 transition-all font-medium text-sm;
+        table.dataTable tbody tr:hover {
+            background: #f3faf6 !important;
         }
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current { 
-            @apply bg-emerald-600 text-white border-emerald-600 shadow-md;
+        .dt-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
         }
-        .dataTables_wrapper .dataTables_length { margin-bottom: 8px; }
-        .dataTables_wrapper .dataTables_length select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; }
-        .dataTables_wrapper .dataTables_filter { margin-bottom: 8px; float: right; }
-        .dataTables_wrapper .dataTables_filter input { padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; }
-        .dataTables_wrapper .dataTables_info { padding: 10px 0; color: #666; float: left; }
-        .dataTables_wrapper .dataTables_paginate { padding: 10px 0; }
+        .dt-toolbar-left,
+        .dt-toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .dt-report-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dt-report-btn {
+            border: 1px solid #d1d5db;
+            background: #fff;
+            color: #1f2937;
+            border-radius: 10px;
+            padding: 7px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.2;
+            transition: all 180ms ease;
+        }
+        .dt-report-btn:hover {
+            border-color: #2d5a27;
+            color: #2d5a27;
+            background: #f3faf6;
+        }
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label,
+        .dataTables_wrapper .dataTables_info {
+            color: #4b5563;
+            font-size: 14px;
+        }
+        .dataTables_wrapper .dataTables_length select,
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            padding: 7px 10px;
+            background: #fff;
+            min-height: 38px;
+        }
+        .dataTables_wrapper .dataTables_filter input:focus,
+        .dataTables_wrapper .dataTables_length select:focus {
+            outline: none;
+            border-color: #2d5a27;
+            box-shadow: 0 0 0 3px rgba(45, 90, 39, 0.15);
+        }
+        .dt-footer {
+            margin-top: 14px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .dataTables_wrapper .dataTables_paginate {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding-top: 0;
+        }
         .dataTables_wrapper .dataTables_paginate .paginate_button {
-            padding: 6px 12px; margin: 0 2px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;
-            background: #2d5a27; color: white !important;
+            margin: 0 !important;
+            border: 1px solid #d1d5db !important;
+            border-radius: 10px !important;
+            background: #fff !important;
+            color: #1f2937 !important;
+            padding: 6px 11px !important;
+            min-width: 36px;
         }
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover { background: #1e3d1a; }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #f3faf6 !important;
+            border-color: #2d5a27 !important;
+            color: #2d5a27 !important;
+        }
         .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background: #1e3d1a; font-weight: bold;
+            background: #1f5a2e !important;
+            border-color: #1f5a2e !important;
+            color: #fff !important;
         }
         .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-            background: #ccc; cursor: not-allowed;
+            opacity: 0.45;
+            cursor: not-allowed !important;
         }
         @media (max-width: 768px) {
-            .data-table_wrapper thead th,
-            .data-table_wrapper tbody td { padding: 8px 8px; font-size: 12px; }
-            .dataTables_wrapper .dataTables_filter,
-            .dataTables_wrapper .dataTables_length,
-            .dataTables_wrapper .dataTables_info,
-            .dataTables_wrapper .dataTables_paginate { float: none !important; text-align: left; }
+            .dataTables_wrapper {
+                padding: 0.75rem;
+            }
+            table.dataTable thead th,
+            table.dataTable tbody td {
+                padding: 10px !important;
+                font-size: 12px;
+            }
+            .dt-toolbar,
+            .dt-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -190,32 +281,148 @@
 
 <script>
 $(document).ready(function() {
-    $('.data-table').each(function() {
-        if ($(this).find('tbody tr').length > 0) {
-            $(this).DataTable({
-                responsive: true,
-                pageLength: 25,
-                order: [[0, 'desc']],
-                autoWidth: false,
-                dom: '<"top"lf>rt<"bottom"ip><"clear">',
-                language: {
-                    search: '<i class="fas fa-search mr-1"></i> Search:',
-                    lengthMenu: '<i class="fas fa-list mr-1"></i> _MENU_ per page',
-                    info: '<i class="fas fa-info-circle mr-1"></i> _START_ to _END_ of _TOTAL_',
-                    paginate: { 
-                        first: '<i class="fas fa-angle-double-left"></i>', 
-                        last: '<i class="fas fa-angle-double-right"></i>', 
-                        next: '<i class="fas fa-angle-right"></i>', 
-                        previous: '<i class="fas fa-angle-left"></i>' 
-                    },
-                    emptyTable: '<div class="text-center py-12"><i class="fas fa-inbox text-4xl text-gray-300 mb-4 block"></i><h3 class="text-xl font-semibold text-gray-500 mb-2">No data available</h3><p class="text-gray-400">Get started by adding your first record.</p></div>',
-                    processing: '<div class="flex items-center justify-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>'
-                },
-                drawCallback: function() {
-                    $('tbody tr').hover(function() { $(this).addClass('hover:bg-gray-50'); }, function() { $(this).removeClass('hover:bg-gray-50'); });
-                }
+    const csvSafe = (value) => {
+        const clean = String(value ?? '').replace(/\s+/g, ' ').trim();
+        return `"${clean.replace(/"/g, '""')}"`;
+    };
+
+    const textFromHtml = (htmlOrText) => {
+        const temp = document.createElement('div');
+        temp.innerHTML = htmlOrText ?? '';
+        return (temp.textContent || temp.innerText || '').replace(/\s+/g, ' ').trim();
+    };
+
+    const getReportFileName = () => {
+        const pageHeading = document.querySelector('h1');
+        const heading = pageHeading ? pageHeading.textContent.trim().toLowerCase().replace(/\s+/g, '-') : 'report';
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${heading}-${y}${m}${d}`;
+    };
+
+    const extractRowsForExport = (tableElement, dt) => {
+        const headerCells = Array.from(tableElement.querySelectorAll('thead th'));
+        const includedIndexes = [];
+        const headerLabels = [];
+
+        headerCells.forEach((th, index) => {
+            const label = (th.textContent || '').replace(/\s+/g, ' ').trim();
+            if (label.toLowerCase() !== 'actions') {
+                includedIndexes.push(index);
+                headerLabels.push(label);
+            }
+        });
+
+        const rows = [];
+        dt.rows({ search: 'applied', order: 'applied' }).every(function () {
+            const rowNode = this.node();
+            const cells = rowNode ? Array.from(rowNode.querySelectorAll('td')) : [];
+            const rowData = includedIndexes.map((idx) => {
+                const cell = cells[idx];
+                return cell ? (cell.textContent || '').replace(/\s+/g, ' ').trim() : '';
             });
-        }
+            rows.push(rowData);
+        });
+
+        return { headerLabels, rows };
+    };
+
+    const downloadCsvReport = (tableElement, dt) => {
+        const { headerLabels, rows } = extractRowsForExport(tableElement, dt);
+        const csvLines = [
+            headerLabels.map(csvSafe).join(','),
+            ...rows.map((row) => row.map(csvSafe).join(','))
+        ];
+        const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `${getReportFileName()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const printReport = (tableElement, dt) => {
+        const { headerLabels, rows } = extractRowsForExport(tableElement, dt);
+        const printWindow = window.open('', '_blank', 'width=1100,height=700');
+        if (!printWindow) return;
+
+        const headerHtml = headerLabels.map((h) => `<th>${h}</th>`).join('');
+        const bodyHtml = rows.map((row) => `<tr>${row.map((cell) => `<td>${cell || '-'}</td>`).join('')}</tr>`).join('');
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 24px; color: #111827; }
+                        h2 { margin: 0 0 8px; }
+                        p { margin: 0 0 16px; color: #4b5563; font-size: 13px; }
+                        table { width: 100%; border-collapse: collapse; }
+                        th, td { border: 1px solid #d1d5db; padding: 10px; text-align: left; font-size: 13px; }
+                        th { background: #eef5ef; }
+                    </style>
+                </head>
+                <body>
+                    <h2>${(document.querySelector('h1')?.textContent || 'Report').trim()}</h2>
+                    <p>Generated on ${new Date().toLocaleString()}</p>
+                    <table>
+                        <thead><tr>${headerHtml}</tr></thead>
+                        <tbody>${bodyHtml || '<tr><td colspan="' + headerLabels.length + '">No records</td></tr>'}</tbody>
+                    </table>
+                </body>
+            </html>
+        `);
+
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
+
+    const mountReportActions = (tableElement, dt) => {
+        const wrapper = $(tableElement).closest('.dataTables_wrapper');
+        if (!wrapper.length || wrapper.find('.dt-report-actions').length) return;
+
+        const csvBtn = $('<button type="button" class="dt-report-btn"><i class="fas fa-file-csv mr-1"></i>Download CSV</button>');
+        const printBtn = $('<button type="button" class="dt-report-btn"><i class="fas fa-print mr-1"></i>Print</button>');
+        const group = $('<div class="dt-report-actions"></div>').append(csvBtn, printBtn);
+
+        wrapper.find('.dt-toolbar-left').append(group);
+
+        csvBtn.on('click', () => downloadCsvReport(tableElement, dt));
+        printBtn.on('click', () => printReport(tableElement, dt));
+    };
+
+    $('.data-table').each(function() {
+        const dt = $(this).DataTable({
+            responsive: true,
+            pageLength: 25,
+            order: [[0, 'desc']],
+            autoWidth: false,
+            dom: '<"dt-toolbar"<"dt-toolbar-left"l><"dt-toolbar-right"f>>rt<"dt-footer"ip>',
+            columnDefs: [
+                { orderable: false, targets: -1 }
+            ],
+            language: {
+                search: '<i class="fas fa-search mr-1"></i> Search:',
+                lengthMenu: '<i class="fas fa-list mr-1"></i> _MENU_ per page',
+                info: '<i class="fas fa-info-circle mr-1"></i> _START_ to _END_ of _TOTAL_',
+                paginate: { 
+                    first: '<i class="fas fa-angle-double-left"></i>', 
+                    last: '<i class="fas fa-angle-double-right"></i>', 
+                    next: '<i class="fas fa-angle-right"></i>', 
+                    previous: '<i class="fas fa-angle-left"></i>' 
+                },
+                emptyTable: '<div class="text-center py-12"><i class="fas fa-inbox text-4xl text-gray-300 mb-4 block"></i><h3 class="text-xl font-semibold text-gray-500 mb-2">No data available</h3><p class="text-gray-400">Get started by adding your first record.</p></div>',
+                processing: '<div class="flex items-center justify-center py-4"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>'
+            },
+            drawCallback: function() {
+                $('tbody tr').hover(function() { $(this).addClass('hover:bg-gray-50'); }, function() { $(this).removeClass('hover:bg-gray-50'); });
+            }
+        });
+        mountReportActions(this, dt);
     });
 
     // Mark all read - defined before use

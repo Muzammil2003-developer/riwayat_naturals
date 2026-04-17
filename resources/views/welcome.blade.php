@@ -1,8 +1,57 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .cod-cta {
+        animation: codPulse 1.8s ease-in-out infinite;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .cod-cta:hover {
+        animation-play-state: paused;
+        transform: translateY(-1px);
+    }
+
+    @keyframes codPulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+        }
+        50% {
+            transform: scale(1.035);
+            box-shadow: 0 14px 28px rgba(45, 90, 39, 0.35);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cod-cta {
+            animation: none;
+        }
+    }
+
+    .premium-dot {
+        animation: premiumBlink 2.2s ease-in-out infinite;
+    }
+
+    @keyframes premiumBlink {
+        0%, 100% {
+            opacity: 0.35;
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.15);
+        }
+        50% {
+            opacity: 1;
+            box-shadow: 0 0 12px 2px rgba(34, 197, 94, 0.45);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .premium-dot {
+            animation: none;
+        }
+    }
+</style>
 <!-- Hero Section -->
-<section class="relative py-24 overflow-hidden">
+<section class="motion-section relative py-24 overflow-hidden">
     <div class="absolute inset-0 leaf-pattern"></div>
     <div class="absolute top-0 right-0 w-96 h-96 bg-[#2d5a27]/10 rounded-full blur-3xl"></div>
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#4a7c42]/10 rounded-full blur-3xl"></div>
@@ -31,42 +80,8 @@
     </div>
 </section>
 
-<!-- Features -->
-<section class="py-16 bg-white">
-<div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
-        <div class="text-center" data-aos="fade-up" data-aos-delay="100">
-            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-leaf text-[#2d5a27] text-2xl"></i>
-            </div>
-            <h3 class="font-bold text-[#1e3d1a]">100% Natural</h3>
-            <p class="text-sm text-gray-500">No harsh chemicals</p>
-        </div>
-        <div class="text-center" data-aos="fade-up" data-aos-delay="200">
-            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-flask text-[#2d5a27] text-2xl"></i>
-            </div>
-            <h3 class="font-bold text-[#1e3d1a]">Herbal Formula</h3>
-            <p class="text-sm text-gray-500">Ancient recipes</p>
-        </div>
-        <div class="text-center" data-aos="fade-up" data-aos-delay="300">
-            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-heart text-[#2d5a27] text-2xl"></i>
-            </div>
-            <h3 class="font-bold text-[#1e3d1a]">Gentle</h3>
-            <p class="text-sm text-gray-500">Safe for all hair</p>
-        </div>
-        <div class="text-center" data-aos="fade-up" data-aos-delay="400">
-            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-shipping-fast text-[#2d5a27] text-2xl"></i>
-            </div>
-            <h3 class="font-bold text-[#1e3d1a]">Fast Delivery</h3>
-            <p class="text-sm text-gray-500">Free shipping</p>
-        </div>
-    </div>
-</section>
-
 <!-- Products -->
-<section id="products" class="py-20 bg-[#f2f2f2]">
+<section id="products" class="motion-section py-20 bg-[#f2f2f2]">
     <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
             <h2 data-aos="fade-up" class="text-4xl md:text-5xl font-extrabold text-black mb-4">Our Products</h2>
@@ -84,43 +99,53 @@
         @else
             <div class="space-y-8">
                 @foreach($products as $index => $product)
-                    <div data-aos="fade-up" data-aos-delay="{{ ($index * 100) }}" class="bg-white rounded-[24px] border border-black/10 shadow-[0_12px_28px_rgba(0,0,0,0.08)] overflow-hidden">
-                        <div class="grid lg:grid-cols-[1fr,1.15fr]">
-                            <div class="relative min-h-[240px] lg:min-h-[340px] bg-gradient-to-b from-[#171717] to-black flex items-center justify-center">
-                                @if($product->image)
-                                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
-                                @else
-                                    <div class="text-center text-[#d9b66e]">
-                                        <div class="w-28 h-28 mx-auto mb-4 rounded-full border border-[#d9b66e]/40 flex items-center justify-center">
-                                            <i class="fas fa-oil-can text-5xl"></i>
+                    <div data-aos="fade-up" data-aos-delay="{{ ($index * 100) }}" class="card-lift relative bg-white rounded-[28px] border border-black/10 shadow-[0_14px_36px_rgba(0,0,0,0.08)] p-4 md:p-5">
+                        <div class="grid lg:grid-cols-[0.95fr,1.05fr] gap-0 lg:gap-5 items-center">
+                            <div class="relative">
+                                <div class="relative h-[300px] md:h-[380px] rounded-[24px] overflow-hidden bg-gradient-to-br from-[#121212] via-[#1a1a1a] to-black flex items-center justify-center">
+                                    @if($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-full object-contain object-center p-2 md:p-3">
+                                    @else
+                                        <div class="text-center text-[#d9b66e]">
+                                            <div class="w-24 h-24 mx-auto mb-3 rounded-full border border-[#d9b66e]/40 flex items-center justify-center">
+                                                <i class="fas fa-oil-can text-4xl"></i>
+                                            </div>
+                                            <p class="text-xs tracking-[0.2em] uppercase">Riwayat Naturals</p>
                                         </div>
-                                        <p class="text-sm tracking-[0.22em] uppercase">Riwayat Naturals</p>
-                                    </div>
-                                @endif
+                                    @endif
+                                </div>
+
+                                <div class="absolute top-3 left-3 bg-white/95 text-black text-xs font-semibold px-3 py-1 rounded-full shadow inline-flex items-center gap-2">
+                                    <span class="premium-dot inline-block w-2 h-2 rounded-full bg-green-500"></span>
+                                    Premium Blend
+                                </div>
+                                <div class="absolute -bottom-4 left-4 bg-[#2d5a27] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow">
+                                    Organic Hair Oil
+                                </div>
                             </div>
 
-                            <div class="p-5 md:p-7">
-                                <h3 class="text-2xl md:text-3xl font-extrabold text-black leading-tight">{{ $product->name }}</h3>
-                                <p class="text-black/65 mt-3 text-sm md:text-base">{{ $product->description ?: 'Organic hair oil crafted for healthier, stronger, and shinier hair.' }}</p>
+                            <div class="relative -mt-5 lg:mt-0">
+                                <div class="bg-white rounded-2xl border border-black/10 shadow-[0_8px_20px_rgba(0,0,0,0.07)] p-5 md:p-6">
+                                    <h3 class="text-2xl md:text-[30px] font-extrabold text-black leading-tight">{{ $product->name }}</h3>
+                                    <p class="text-black/65 mt-2.5 text-sm md:text-base">{{ $product->description ?: 'Organic hair oil crafted for healthier, stronger, and shinier hair.' }}</p>
 
-                                <div class="flex items-center gap-3 mt-5 mb-4">
-                                    <span class="text-2xl md:text-3xl font-semibold text-black">{{ $siteSettings['currency_symbol'] ?? 'Rs.' }}{{ number_format($product->price, 2) }}</span>
-                                    <span class="bg-black text-white px-3 py-1 rounded text-xs md:text-sm font-semibold">Sale</span>
+                                    <div class="flex items-center gap-3 mt-4 mb-4">
+                                        <span class="text-2xl md:text-3xl font-extrabold text-black">{{ $siteSettings['currency_symbol'] ?? 'Rs.' }}{{ number_format($product->price, 2) }}</span>
+                                        <span class="bg-black text-white px-3 py-1 rounded-full text-xs font-semibold">Sale</span>
+                                    </div>
+
+                                    <div class="grid sm:grid-cols-2 gap-2.5 text-[13px] md:text-sm text-black/80 mb-5">
+                                        <p class="bg-[#f6f8f5] rounded-xl px-3 py-2"><i class="fas fa-truck text-[#2d5a27] mr-2"></i>Delivery in 2 to 5 days</p>
+                                        <p class="bg-[#f6f8f5] rounded-xl px-3 py-2"><i class="fas fa-leaf text-[#2d5a27] mr-2"></i>100% Organic Products</p>
+                                        <p class="bg-[#f6f8f5] rounded-xl px-3 py-2 sm:col-span-2"><i class="fas fa-star text-[#2d5a27] mr-2"></i>100+ happy customer reviews</p>
+                                    </div>
+
+                                    <button type="button"
+                                        onclick="openOrderModal({{ $product->id }}, null, @js($product->name), {{ $product->price }})"
+                                        class="cod-cta w-full bg-black text-white py-3 rounded-xl text-base md:text-lg font-bold hover:opacity-90 transition">
+                                        <i class="fas fa-cart-plus mr-2"></i>Buy with Cash on Delivery
+                                    </button>
                                 </div>
-
-                                <div class="space-y-2 text-sm md:text-base text-black/75 mb-5">
-                                    <p><i class="fas fa-truck text-[#2d5a27] mr-2"></i>Order will be delivered within 2 to 5 days</p>
-                                    <p><i class="fas fa-leaf text-[#2d5a27] mr-2"></i>100% Organic Products</p>
-                                    <p><i class="fas fa-star text-[#2d5a27] mr-2"></i>100+ happy customer reviews</p>
-                                </div>
-
-                                <button type="button"
-                                    onclick="openOrderModal({{ $product->id }}, null, @js($product->name), {{ $product->price }})"
-                                    class="w-full bg-black text-white py-3 rounded-md text-base md:text-lg font-bold hover:opacity-90 transition">
-                                    <i class="fas fa-cart-plus mr-2"></i>Buy with Cash on Delivery
-                                </button>
-
-                                <p class="mt-3 text-sm md:text-base text-black/70"><i class="fas fa-seedling text-[#2d5a27] mr-2"></i>Organic Hair Oil</p>
                             </div>
                         </div>
                     </div>
@@ -179,8 +204,42 @@
 </section>
 @endif
 
+<!-- Features -->
+<section class="motion-section py-16 bg-white">
+<div class="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="text-center" data-aos="fade-up" data-aos-delay="100">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-leaf text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">100% Natural</h3>
+            <p class="text-sm text-gray-500">No harsh chemicals</p>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="200">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-flask text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">Herbal Formula</h3>
+            <p class="text-sm text-gray-500">Ancient recipes</p>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="300">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-heart text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">Gentle</h3>
+            <p class="text-sm text-gray-500">Safe for all hair</p>
+        </div>
+        <div class="text-center" data-aos="fade-up" data-aos-delay="400">
+            <div class="w-16 h-16 bg-[#f0f5ed] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-shipping-fast text-[#2d5a27] text-2xl"></i>
+            </div>
+            <h3 class="font-bold text-[#1e3d1a]">Fast Delivery</h3>
+            <p class="text-sm text-gray-500">Free shipping</p>
+        </div>
+    </div>
+</section>
+
 <!-- About -->
-<section id="about" class="py-20 bg-white">
+<section id="about" class="motion-section py-20 bg-white">
     <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
         <div data-aos="fade-right">
             <div class="relative">
@@ -216,6 +275,35 @@
                     Eco-friendly packaging
                 </li>
             </ul>
+        </div>
+    </div>
+</section>
+
+<!-- Follow Us -->
+<section class="motion-section py-12 bg-[#f8faf7] border-t border-b border-[#dce7d7]">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h3 class="text-2xl font-bold text-[#1e3d1a] mb-6">Follow Us On</h3>
+        <div class="flex items-center justify-center gap-4 md:gap-6">
+            @if(!empty($siteSettings['tiktok_url']))
+                <a href="{{ $siteSettings['tiktok_url'] }}" target="_blank" rel="noopener noreferrer" class="icon-pop float-soft w-12 h-12 rounded-full bg-white border border-[#dce7d7] flex items-center justify-center text-[#111] hover:bg-[#111] hover:text-white transition" aria-label="TikTok">
+                    <img src="{{ asset('icons/tiktok.png') }}" alt="TikTok" class="w-6 h-6 object-contain">
+                </a>
+            @endif
+            @if(!empty($siteSettings['facebook_url']))
+                <a href="{{ $siteSettings['facebook_url'] }}" target="_blank" rel="noopener noreferrer" class="icon-pop float-soft w-12 h-12 rounded-full bg-white border border-[#dce7d7] flex items-center justify-center text-[#1877f2] hover:bg-[#1877f2] hover:text-white transition" aria-label="Facebook">
+                    <img src="{{ asset('icons/facebook.png') }}" alt="Facebook" class="w-6 h-6 object-contain">
+                </a>
+            @endif
+            @if(!empty($siteSettings['youtube_url']))
+                <a href="{{ $siteSettings['youtube_url'] }}" target="_blank" rel="noopener noreferrer" class="icon-pop float-soft w-12 h-12 rounded-full bg-white border border-[#dce7d7] flex items-center justify-center text-[#ff0000] hover:bg-[#ff0000] hover:text-white transition" aria-label="YouTube">
+                    <img src="{{ asset('icons/youtube.png') }}" alt="YouTube" class="w-6 h-6 object-contain">
+                </a>
+            @endif
+            @if(!empty($siteSettings['instagram_url']))
+                <a href="{{ $siteSettings['instagram_url'] }}" target="_blank" rel="noopener noreferrer" class="icon-pop float-soft w-12 h-12 rounded-full bg-white border border-[#dce7d7] flex items-center justify-center text-[#e1306c] hover:bg-[#e1306c] hover:text-white transition" aria-label="Instagram">
+                    <img src="{{ asset('icons/insta.png') }}" alt="Instagram" class="w-6 h-6 object-contain">
+                </a>
+            @endif
         </div>
     </div>
 </section>

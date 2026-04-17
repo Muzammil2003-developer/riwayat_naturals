@@ -76,6 +76,56 @@
                 transform: translateX(10px) rotate(5deg);
             }
         }
+
+        .motion-section {
+            opacity: 0;
+            transform: translateY(26px);
+            transition: opacity 700ms ease, transform 700ms ease;
+            will-change: opacity, transform;
+        }
+
+        .motion-section.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-lift {
+            transition: transform 320ms ease, box-shadow 320ms ease;
+        }
+
+        .card-lift:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 36px rgba(0, 0, 0, 0.12);
+        }
+
+        .icon-pop {
+            transition: transform 220ms ease, filter 220ms ease;
+        }
+
+        .icon-pop:hover {
+            transform: translateY(-4px) scale(1.08);
+            filter: saturate(1.15);
+        }
+
+        .float-soft {
+            animation: floatSoft 3.2s ease-in-out infinite;
+        }
+
+        @keyframes floatSoft {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .motion-section,
+            .card-lift,
+            .icon-pop,
+            .float-soft {
+                animation: none !important;
+                transition: none !important;
+                transform: none !important;
+            }
+        }
     </style>
     <div id="floating-elements"></div>
 </head>
@@ -120,14 +170,13 @@
                             <i class="fas fa-user-cog"></i>
                         </a>
                     @else
-                        <a href="{{ route('admin.login') }}"
-                            class="w-10 h-10 rounded-full border border-black/15 flex items-center justify-center text-black hover:bg-black hover:text-white transition">
+                        <button type="button"
+                            onclick="openAdminLoginModal()"
+                            class="w-10 h-10 rounded-full border border-black/15 flex items-center justify-center text-black hover:bg-black hover:text-white transition"
+                            title="Admin Login">
                             <i class="far fa-user"></i>
-                        </a>
+                        </button>
                     @endauth
-                    <a href="{{ route('bestseller') }}" class="w-10 h-10 rounded-full border border-black/15 flex items-center justify-center text-black hover:bg-black hover:text-white transition">
-                        <i class="fas fa-shopping-bag"></i>
-                    </a>
                 </div>
             </div>
 
@@ -147,13 +196,75 @@
                 @auth
                     <a href="{{ route('admin.dashboard') }}" class="block py-2 text-black font-medium">Dashboard</a>
                 @else
-                    <a href="{{ route('admin.login') }}" class="block py-2 text-black/80">Login</a>
+                    <button type="button" onclick="openAdminLoginModal()" class="block py-2 text-black/80">Login</button>
                 @endauth
             </div>
         </div>
     </nav>
 
     @yield('content')
+
+    @php
+        $rawWhatsappNumber = $siteSettings['whatsapp_number'] ?? '';
+        $cleanWhatsappNumber = preg_replace('/\D+/', '', $rawWhatsappNumber);
+        $whatsappHref = $siteSettings['whatsapp_link'] ?? '';
+        if (empty($whatsappHref) && !empty($cleanWhatsappNumber)) {
+            $whatsappHref = 'https://wa.me/' . $cleanWhatsappNumber;
+        }
+    @endphp
+
+    @if(!empty($whatsappHref))
+        <a href="{{ $whatsappHref }}"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="Chat on WhatsApp"
+           class="fixed bottom-5 right-5 z-[60] w-14 h-14 hover:scale-105 transition flex items-center justify-center">
+            <img src="{{ asset('icons/whatsapp.png') }}" alt="WhatsApp" class="w-14 h-14 object-contain mix-blend-multiply">
+        </a>
+    @endif
+
+    @guest
+    <div id="adminLoginModal" class="fixed inset-0 z-[80] bg-black/50 hidden items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            <div class="green-gradient p-5 flex items-center justify-between">
+                <div>
+                    <h3 class="text-white text-xl font-bold">Admin Login</h3>
+                    <p class="text-white/80 text-sm">Sign in to your account</p>
+                </div>
+                <button type="button" onclick="closeAdminLoginModal()" class="text-white/80 hover:text-white" aria-label="Close">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <form id="adminLoginModalForm" method="POST" action="{{ route('admin.login.post') }}" class="p-6">
+                @csrf
+                @if(session('error'))
+                    <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-medium mb-2">Email</label>
+                    <input type="email" name="email" required value="{{ old('email') }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2d5a27]" placeholder="admin@example.com">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-medium mb-2">Password</label>
+                    <input type="password" name="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2d5a27]" placeholder="••••••••">
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <button id="adminLoginModalBtn" type="submit" class="flex-1 green-gradient text-white py-3 rounded-lg font-bold hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </button>
+                    <a href="{{ route('home') }}" class="px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50">
+                        Back
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    @endguest
 
     <footer class="bg-[#2d5a27] text-white py-16 mt-20">
         <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-12">
@@ -227,10 +338,69 @@
         });
     </script>
     <script>
+        const revealSections = document.querySelectorAll('.motion-section');
+        if (revealSections.length) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+            revealSections.forEach((section) => observer.observe(section));
+        }
+    </script>
+    <script>
         function toggleMobileMenu() {
             document.getElementById('mobileMenu').classList.toggle('hidden');
         }
     </script>
+    @guest
+    <script>
+        function openAdminLoginModal() {
+            const modal = document.getElementById('adminLoginModal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAdminLoginModal() {
+            const modal = document.getElementById('adminLoginModal');
+            if (!modal) return;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        const adminLoginModal = document.getElementById('adminLoginModal');
+        if (adminLoginModal) {
+            adminLoginModal.addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeAdminLoginModal();
+                }
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeAdminLoginModal();
+                }
+            });
+        }
+
+        const adminLoginModalForm = document.getElementById('adminLoginModalForm');
+        const adminLoginModalBtn = document.getElementById('adminLoginModalBtn');
+        if (adminLoginModalForm && adminLoginModalBtn) {
+            adminLoginModalForm.addEventListener('submit', function () {
+                adminLoginModalBtn.disabled = true;
+                adminLoginModalBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...';
+            });
+        }
+
+        @if(request()->query('admin_login') || session('error') || $errors->any())
+            openAdminLoginModal();
+        @endif
+    </script>
+    @endguest
 </body>
 
 </html>

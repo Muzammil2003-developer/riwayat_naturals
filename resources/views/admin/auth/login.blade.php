@@ -17,7 +17,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('admin.login') }}">
+        <form id="adminLoginForm" method="POST" action="{{ route('admin.login') }}">
             @csrf
             <div class="mb-4">
                 <label class="block text-gray-700 font-medium mb-2">Email</label>
@@ -27,10 +27,21 @@
                 <label class="block text-gray-700 font-medium mb-2">Password</label>
                 <input type="password" name="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#2d5a27]" placeholder="••••••••">
             </div>
-            <button type="submit" class="w-full green-gradient text-white py-3 rounded-lg font-bold hover:opacity-90">
+            <button id="adminLoginBtn" type="submit" class="w-full green-gradient text-white py-3 rounded-lg font-bold hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed">
                 <i class="fas fa-sign-in-alt mr-2"></i> Login
             </button>
         </form>
     </div>
 </div>
+<script>
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+    if (adminLoginForm && adminLoginBtn) {
+        adminLoginForm.addEventListener('submit', function () {
+            adminLoginBtn.disabled = true;
+            adminLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...';
+        });
+    }
+</script>
 @endsection

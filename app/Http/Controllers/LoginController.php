@@ -4,14 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    public function showLoginForm(): View
+    public function showLoginForm(): View|RedirectResponse
     {
-        return view('admin.auth.login');
+        if (Auth::check()) {
+            return redirect()->route('admin.dashboard');
+        }
+
+        return redirect()->route('home', ['admin_login' => 1]);
     }
 
     public function login(Request $request): RedirectResponse
@@ -21,7 +25,10 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt([
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ])) {
             $request->session()->regenerate();
             return redirect()->route('admin.dashboard')->with('success', 'Welcome back!');
         }

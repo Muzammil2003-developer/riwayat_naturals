@@ -80,6 +80,40 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="border-t pt-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Social & WhatsApp</h2>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">WhatsApp Number</label>
+                            <input type="text" name="whatsapp_number" value="{{ $settings['whatsapp_number'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="923001234567">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">WhatsApp Link</label>
+                            <input type="url" name="whatsapp_link" value="{{ $settings['whatsapp_link'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="https://wa.me/923001234567">
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">TikTok URL</label>
+                            <input type="url" name="tiktok_url" value="{{ $settings['tiktok_url'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="https://www.tiktok.com/@yourpage">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Facebook URL</label>
+                            <input type="url" name="facebook_url" value="{{ $settings['facebook_url'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="https://www.facebook.com/yourpage">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">YouTube URL</label>
+                            <input type="url" name="youtube_url" value="{{ $settings['youtube_url'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="https://www.youtube.com/@yourchannel">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Instagram URL</label>
+                            <input type="url" name="instagram_url" value="{{ $settings['instagram_url'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="https://www.instagram.com/yourpage">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <button type="submit" class="w-full mt-8 green-gradient text-white py-3 rounded-lg font-bold hover:bg-amber-700 transition">
