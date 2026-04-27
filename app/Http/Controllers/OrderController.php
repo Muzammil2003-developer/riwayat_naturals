@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewOrderNotification;
 use App\Models\Order;
+use App\Models\Setting;
 use App\Models\Product;
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -37,7 +41,21 @@ class OrderController extends Controller
             $validated['product_id'] = null;
         }
 
-        Order::create($validated);
+        $order = Order::create($validated);
+        $order->load(['product', 'package']);
+
+        $adminOrderEmail = Setting::get('admin_order_email') ?: Setting::get('email');
+        if ($adminOrderEmail) {
+            try {
+                Mail::to($adminOrderEmail)->send(new NewOrderNotification($order));
+            } catch (\Throwable $exception) {
+                Log::error('Failed to send new order email notification.', [
+                    'order_id' => $order->id,
+                    'recipient' => $adminOrderEmail,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
+        }
 
         return redirect()->route('home')->with('success', 'Order placed successfully! We will contact you soon.');
     }

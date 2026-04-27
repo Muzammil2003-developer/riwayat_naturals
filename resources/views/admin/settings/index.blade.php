@@ -59,6 +59,12 @@
                             <input type="email" name="email" value="{{ $settings['email'] }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500">
                         </div>
                     </div>
+
+                    <div class="mt-4">
+                        <label class="block text-gray-700 font-medium mb-2">Admin Order Email</label>
+                        <input type="email" name="admin_order_email" value="{{ $settings['admin_order_email'] ?? '' }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500" placeholder="orders@example.com">
+                        <p class="text-xs text-gray-500 mt-1">New order notifications will be sent to this email.</p>
+                    </div>
                     
                     <div class="mt-4">
                         <label class="block text-gray-700 font-medium mb-2">Address</label>
