@@ -243,8 +243,8 @@
     <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-16 items-center">
         <div data-aos="fade-right">
             <div class="relative">
-                <div class="w-full h-96 bg-gradient-to-br from-[#2d5a27] to-[#4a7c42] rounded-3xl flex items-center justify-center">
-                    <i class="fas fa-leaf text-white text-[150px] opacity-50"></i>
+                <div class="w-full h-96 rounded-3xl overflow-hidden">
+                    <img src="{{ asset('webimg/webimg.png') }}" alt="Natural ingredients" class="w-full h-full object-cover">
                 </div>
                 <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl shadow-xl p-6">
                     <p class="text-4xl font-bold text-[#2d5a27]">100%</p>
